@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 struct Stack {
     int S_size;
@@ -9,7 +10,7 @@ struct Stack {
 
 void S_push (struct Stack* MyStack, int elem);
 void S_pop (struct Stack* MyStack);
-void S_fill (struct Stack* MyStack);
+void Work_S (struct Stack* MyStack);
 int Num_Check (struct Stack MyStack);
 void S_print (struct Stack* MyStack);
 
@@ -20,9 +21,11 @@ int main()
     MyStack.number = 0;
     MyStack.arr = (int*) calloc (MyStack.S_size, sizeof(int));
 
-    S_fill(&MyStack);
-    //S_print(&MyStack);
+    assert(MyStack.arr != NULL);
 
+    Work_S(&MyStack);
+
+    free(MyStack.arr);
     return 0;
 }
 
@@ -36,7 +39,7 @@ void S_pop (struct Stack* MyStack){
     printf("%d\n", prin);
 }
 
-void S_fill (struct Stack* MyStack){
+void Work_S (struct Stack* MyStack){
 
     printf("Do you want to begin your work with Stack?(Y/N): ");
     if (getchar() == 'Y'){
@@ -50,6 +53,8 @@ void S_fill (struct Stack* MyStack){
 
                 if (MyStack->number == MyStack->S_size)
                     MyStack->arr = (int*) realloc (MyStack->arr, (MyStack->S_size += 10) * sizeof(int));
+
+                assert(MyStack->arr != NULL);
 
                 printf("\nInput the element you want to push: ");
                 int elem = 0;
