@@ -1,0 +1,108 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+
+typedef double Stack_T;
+
+struct Stack {
+    int S_size;
+    int number;
+    Stack_T* arr;
+};
+
+void S_push (struct Stack* MyStack, Stack_T elem);
+void S_pop (struct Stack* MyStack);
+void Work_S (struct Stack* MyStack);
+int Num_Check (struct Stack MyStack);
+void S_print (struct Stack* MyStack);
+
+void Print (int i) {printf ("%d\n", i);}
+void Print (double d) {printf ("%lg\n", d);}
+void Print (char c) {printf ("%c\n", c);}
+
+void Scan (int* i) {scanf ("%d", i);}
+void Scan (double* d) {scanf ("%lg", d);}
+void Scan (char* c) {scanf ("%c", c);}
+
+int main()
+{
+    struct Stack MyStack;
+    MyStack.S_size = 20;
+    MyStack.number = 0;
+    MyStack.arr = (Stack_T*) calloc (MyStack.S_size, sizeof(Stack_T));
+
+    assert(MyStack.arr != NULL);
+
+    Work_S(&MyStack);
+
+    free(MyStack.arr);
+    return 0;
+}
+
+void S_push (struct Stack* MyStack, Stack_T elem){
+    MyStack->arr[MyStack->number] = elem;
+    MyStack->number++;
+}
+
+void S_pop (struct Stack* MyStack){
+    Stack_T prin = MyStack->arr[--MyStack->number];
+    Print(prin);
+}
+
+void Work_S (struct Stack* MyStack){
+
+    printf("Do you want to begin your work with Stack?(Y/N): ");
+    if (getchar() == 'Y'){
+        for (int i = 0; ; i++){
+
+            printf("Do you want to push the element (Y/N) or finish your work(F)? ");
+            getchar();
+            char c = getchar();
+
+            if (c == 'Y'){
+
+                if (MyStack->number == MyStack->S_size)
+                    MyStack->arr = (Stack_T*) realloc (MyStack->arr, (MyStack->S_size += 10) * sizeof(Stack_T));
+
+                assert(MyStack->arr != NULL);
+
+                printf("\nInput the element you want to push: ");
+                Stack_T elem = 0;
+                Scan(&elem);
+                S_push(MyStack, elem);
+            }
+
+            if (c == 'N')
+                S_print(MyStack);
+
+            if (c == 'F')
+                return;
+            else continue;
+        }
+    }
+}
+
+int Num_Check (struct Stack MyStack){
+
+    if(MyStack.number == 0) return 0;
+    else return 1;
+}
+
+void S_print (struct Stack* MyStack){
+
+    for(; ; ) {
+        printf("Do you want to know the last element? (Y/N): ");
+        getchar();
+        char c = getchar();
+
+        if (c == 'Y') {
+            if(Num_Check(*MyStack))
+                S_pop(MyStack);
+            else {
+                printf ("Stack is empty\n");
+                return;
+            }
+        }
+        if (c == 'N') return;
+    }
+}
