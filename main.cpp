@@ -1,108 +1,117 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <cstring>
 
-typedef double Stack_T;
 
-struct Stack {
-    int S_size;
-    int number;
-    Stack_T* arr;
-};
-
-void S_push (struct Stack* MyStack, Stack_T elem);
-void S_pop (struct Stack* MyStack);
-void Work_S (struct Stack* MyStack);
-int Num_Check (struct Stack MyStack);
-void S_print (struct Stack* MyStack);
-
-void Print (int i) {printf ("%d\n", i);}
-void Print (double d) {printf ("%lg\n", d);}
-void Print (char c) {printf ("%c\n", c);}
+void Print (int i) {printf ("%d ", i);}
+void Print (double d) {printf ("%lg ", d);}
+void Print (char c) {printf ("%c ", c);}
 
 void Scan (int* i) {scanf ("%d", i);}
 void Scan (double* d) {scanf ("%lg", d);}
 void Scan (char* c) {scanf ("%c", c);}
 
-int main()
-{
-    struct Stack MyStack;
-    MyStack.S_size = 20;
-    MyStack.number = 0;
-    MyStack.arr = (Stack_T*) calloc (MyStack.S_size, sizeof(Stack_T));
+template <typename T>
 
-    assert(MyStack.arr != NULL);
+class Stack {
+public:
+    int d_size_;
+    int number;
+    T* data_;
+public:
+    Stack(int a);
+    Stack(const Stack& object);
+    ~Stack();
+    void Push(T val);
+    void Pop();
+};
 
-    Work_S(&MyStack);
+template <typename T>
+void ReFill (Stack <T> obj);
 
-    free(MyStack.arr);
+template <typename T>
+void S_print (Stack <T> obj);
+
+int main() {    //!!!!!!!!!!!!!!!!!!
+
+    Stack <int> obj1 (10);
+    ReFill(obj1);
+    S_print(obj1);
+
     return 0;
-}
+}               //!!!!!!!!!!!!!!!!!!
 
-void S_push (struct Stack* MyStack, Stack_T elem){
-    MyStack->arr[MyStack->number] = elem;
-    MyStack->number++;
-}
+template <typename T>
+Stack <T>::Stack(int a){
 
-void S_pop (struct Stack* MyStack){
-    Stack_T prin = MyStack->arr[--MyStack->number];
-    Print(prin);
-}
+    d_size_ = a;
+    printf("construct\n");
+    data_ = (T*) calloc (d_size_, sizeof(T));
+    assert(data_ != NULL);
 
-void Work_S (struct Stack* MyStack){
-
-    printf("Do you want to begin your work with Stack?(Y/N): ");
-    if (getchar() == 'Y'){
-        for (int i = 0; ; i++){
-
-            printf("Do you want to push the element (Y/N) or finish your work(F)? ");
-            getchar();
-            char c = getchar();
-
-            if (c == 'Y'){
-
-                if (MyStack->number == MyStack->S_size)
-                    MyStack->arr = (Stack_T*) realloc (MyStack->arr, (MyStack->S_size += 10) * sizeof(Stack_T));
-
-                assert(MyStack->arr != NULL);
-
-                printf("\nInput the element you want to push: ");
-                Stack_T elem = 0;
-                Scan(&elem);
-                S_push(MyStack, elem);
-            }
-
-            if (c == 'N')
-                S_print(MyStack);
-
-            if (c == 'F')
-                return;
-            else continue;
-        }
+    for (int i = 0; i < d_size_; i++) {
+        data_[i] = 1;
     }
+
+    for(int i = 0; i < d_size_; i++)
+        Print(data_[i]);
+    printf("\n");
 }
 
-int Num_Check (struct Stack MyStack){
+template <typename T>
+Stack <T>::Stack(const Stack& object){
 
-    if(MyStack.number == 0) return 0;
-    else return 1;
+    printf ("Copy\n d_size = ");
+    Print(object.d_size_);
+    printf("\n");
+
+    d_size_ = object.d_size_;
+    number = object.number;
+
+    data_ = (T*)calloc(d_size_, sizeof(T));
+    assert(data_ != NULL);
+
+    //memcpy (data_, object.data_, d_size_);
+
+    for(int i = 0; i < d_size_; i++)
+        data_[i] = object.data_[i];
 }
 
-void S_print (struct Stack* MyStack){
 
-    for(; ; ) {
-        printf("Do you want to know the last element? (Y/N): ");
-        getchar();
-        char c = getchar();
+template <typename T>
+Stack <T>::~Stack(){
+    printf("distruct\n");
+    free(data_);
+}
 
-        if (c == 'Y') {
-            if(Num_Check(*MyStack))
-                S_pop(MyStack);
-            else {
-                printf ("Stack is empty\n");
-                return;
-            }
-        }
-        if (c == 'N') return;
+template <typename T>
+void Stack <T>::Push(T val){
+    this->data_[this->number++] = val;
+}
+
+template <typename T>
+void Stack <T>::Pop(){
+    Print(this->data_[--this->number]);
+}
+
+template <typename T>
+void S_print(Stack <T> obj){
+
+    for (int i = 0; i < obj.d_size_; i++){
+        Print(obj.data_[i]);
     }
+
+    printf("\n");
+}
+
+template <typename T>
+void ReFill(Stack <T> obj){
+
+    for(int i = 0; i < obj.d_size_; i++){
+        obj.data_[i] = 2;
+    }
+
+    printf("after refilling:\n");
+    S_print(obj);
 }
